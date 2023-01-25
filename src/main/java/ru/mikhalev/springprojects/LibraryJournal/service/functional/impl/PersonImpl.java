@@ -1,31 +1,50 @@
 package ru.mikhalev.springprojects.LibraryJournal.service.functional.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.mikhalev.springprojects.LibraryJournal.service.functional.api.PeopleService;
+import ru.mikhalev.springprojects.LibraryJournal.model.Person;
+import ru.mikhalev.springprojects.LibraryJournal.repository.PersonRepository;
+import ru.mikhalev.springprojects.LibraryJournal.service.functional.api.PersonService;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Ivan Mikhalev
  */
 
 @Service
-public class PeopleImpl implements PeopleService {
+@RequiredArgsConstructor
+public class PersonImpl implements PersonService {
+    private final PersonRepository personRepository;
+
     @Override
-    public String addPerson() {
-        return null;
+    public void addPerson(Person person) {
+        personRepository.save(person);
     }
 
     @Override
-    public String changePerson() {
-        return null;
+    public void changePerson(int id, Person updatedPerson) {
+        Person person = Person.getPersonByOptional(personRepository.findById(id));
+        person.setFullName(updatedPerson.getFullName());
+        person.setBirthYear(updatedPerson.getBirthYear());
+        personRepository.save(person);
     }
 
     @Override
-    public String deletePerson() {
-        return null;
+    public void deletePerson(int id) {
+        personRepository.deleteById(id);
     }
 
     @Override
-    public String showAllPersons() {
-        return null;
+    public List<Person> showAllPersons() {
+        return personRepository.findAll();
+    }
+
+    @Override
+    public Person showOnePerson(int id) {
+        Optional<Person> optional = personRepository.findById(id);
+        /**Здесь будет выбрасываться исключение*/
+        return optional.orElse(null);
     }
 }

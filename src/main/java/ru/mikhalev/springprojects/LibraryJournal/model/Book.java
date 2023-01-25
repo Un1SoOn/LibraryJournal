@@ -1,4 +1,4 @@
-package ru.mikhalev.springprojects.LibraryJournal.dao;
+package ru.mikhalev.springprojects.LibraryJournal.model;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookDAO {
+public class Book {
     @NotNull(message="Название книги не может отсутствовать")
     @Size(min = 2, max = 50, message="Название книги не может быть меньше 2 и больше 50 символов")
     private String title;

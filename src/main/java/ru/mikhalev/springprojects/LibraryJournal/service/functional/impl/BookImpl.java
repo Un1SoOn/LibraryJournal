@@ -1,13 +1,19 @@
-package ru.mikhalev.springprojects.LibraryJournal.service.funcional.impl;
+package ru.mikhalev.springprojects.LibraryJournal.service.functional.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.mikhalev.springprojects.LibraryJournal.service.funcional.api.BookService;
+import ru.mikhalev.springprojects.LibraryJournal.repository.BookRepository;
+import ru.mikhalev.springprojects.LibraryJournal.service.functional.api.BookService;
 
 /**
  * @author Ivan Mikhalev
  */
+
 @Service
+@RequiredArgsConstructor
 public class BookImpl implements BookService {
+    private final BookRepository bookRepository;
+
     @Override
     public String addBook() {
         return null;
@@ -20,6 +26,11 @@ public class BookImpl implements BookService {
 
     @Override
     public String deleteBook() {
+        return null;
+    }
+
+    @Override
+    public String showAllBooks() {
         return null;
     }
 }
