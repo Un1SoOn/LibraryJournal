@@ -7,7 +7,6 @@ import ru.mikhalev.springprojects.LibraryJournal.repository.PersonRepository;
 import ru.mikhalev.springprojects.LibraryJournal.service.functional.api.PersonService;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Ivan Mikhalev
@@ -24,7 +23,7 @@ public class PersonImpl implements PersonService {
     }
 
     @Override
-    public void changePerson(int id, Person updatedPerson) {
+    public void editPerson(int id, Person updatedPerson) {
         Person person = Person.getPersonByOptional(personRepository.findById(id));
         person.setFullName(updatedPerson.getFullName());
         person.setBirthYear(updatedPerson.getBirthYear());
@@ -43,8 +42,6 @@ public class PersonImpl implements PersonService {
 
     @Override
     public Person showOnePerson(int id) {
-        Optional<Person> optional = personRepository.findById(id);
-        /**Здесь будет выбрасываться исключение*/
-        return optional.orElse(null);
+        return personRepository.getReferenceById(id);
     }
 }

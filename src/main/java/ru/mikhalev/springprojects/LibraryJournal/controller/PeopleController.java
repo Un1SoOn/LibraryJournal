@@ -2,10 +2,11 @@ package ru.mikhalev.springprojects.LibraryJournal.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import ru.mikhalev.springprojects.LibraryJournal.controller.api.PeopleApi;
-import ru.mikhalev.springprojects.LibraryJournal.service.functional.api.PersonService;
+import ru.mikhalev.springprojects.LibraryJournal.model.Person;
+import ru.mikhalev.springprojects.LibraryJournal.service.functional.impl.PersonImpl;
 
 /**
  * @author Ivan Mikhalev
@@ -15,39 +16,54 @@ import ru.mikhalev.springprojects.LibraryJournal.service.functional.api.PersonSe
 @RequestMapping("/people")
 @RequiredArgsConstructor
 public class PeopleController implements PeopleApi {
-    private final PersonService personService;
-    @GetMapping()
-    public String getAllPeoples() {
+    private final PersonImpl personService;
+
+    @Override
+    @GetMapping
+    public String getAllPersons(Model model) {
+        model.addAttribute("persons", personService.showAllPersons());
         return "peoples/allPeoples";
     }
 
     @Override
-    public String getAllPersons() {
-        return null;
+    @GetMapping("/new")
+    public String newPerson(Model model) {
+        model.addAttribute("person", new Person());
+        return "/peoples/newPersonPage";
     }
 
     @Override
-    public String newPerson() {
-        return null;
+    @PostMapping("/new")
+    public String newPerson(@ModelAttribute("person") Person person) {
+        personService.addPerson(person);
+        return "redirect:/people";
     }
 
     @Override
-    public String createPerson() {
-        return null;
+    @GetMapping("/{id}")
+    public String showPerson(@PathVariable int id, Model model) {
+        model.addAttribute("person", personService.showOnePerson(id));
+        return "/peoples/showPersonPage";
     }
 
     @Override
-    public String editPerson(int id) {
-        return null;
+    @GetMapping("/{id}/edit")
+    public String editPerson(@PathVariable int id, Model model) {
+        model.addAttribute("person", personService.showOnePerson(id));
+        return "peoples/editPersonPage";
     }
 
     @Override
-    public String updatePerson(int id) {
-        return null;
+    @PostMapping("/{id}/edit")
+    public String editPerson(int id, @ModelAttribute Person updatedPerson) {
+        personService.editPerson(id, updatedPerson);
+        return "redirect:/people";
     }
 
     @Override
-    public String deletePerson(int id) {
-        return null;
+    @DeleteMapping("/{id}")
+    public String deletePerson(@PathVariable int id) {
+        personService.deletePerson(id);
+        return "redirect:/people";
     }
 }
