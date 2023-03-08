@@ -1,15 +1,14 @@
 package ru.mikhalev.springprojects.LibraryJournal.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 

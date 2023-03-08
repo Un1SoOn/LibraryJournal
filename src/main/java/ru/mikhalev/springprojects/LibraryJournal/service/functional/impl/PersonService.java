@@ -1,10 +1,12 @@
 package ru.mikhalev.springprojects.LibraryJournal.service.functional.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.TypeMismatchException;
 import org.springframework.stereotype.Service;
+import ru.mikhalev.springprojects.LibraryJournal.model.Book;
 import ru.mikhalev.springprojects.LibraryJournal.model.Person;
+import ru.mikhalev.springprojects.LibraryJournal.repository.BookRepository;
 import ru.mikhalev.springprojects.LibraryJournal.repository.PersonRepository;
-import ru.mikhalev.springprojects.LibraryJournal.service.functional.api.PersonService;
 
 import java.util.List;
 
@@ -14,15 +16,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PersonImpl implements PersonService {
+public class PersonService {
     private final PersonRepository personRepository;
+    private final BookRepository bookRepository;
 
-    @Override
     public void addPerson(Person person) {
         personRepository.save(person);
     }
 
-    @Override
     public void editPerson(int id, Person updatedPerson) {
         Person person = Person.getPersonByOptional(personRepository.findById(id));
         person.setFullName(updatedPerson.getFullName());
@@ -30,18 +31,19 @@ public class PersonImpl implements PersonService {
         personRepository.save(person);
     }
 
-    @Override
     public void deletePerson(int id) {
         personRepository.deleteById(id);
     }
 
-    @Override
     public List<Person> showAllPersons() {
         return personRepository.findAll();
     }
 
-    @Override
     public Person showOnePerson(int id) {
         return personRepository.getReferenceById(id);
+    }
+
+    public List<Book> getBooksByPersonId(int id){
+        return bookRepository.findBooksByPersonId(id);
     }
 }

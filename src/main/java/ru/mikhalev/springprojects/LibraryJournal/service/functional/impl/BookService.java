@@ -2,10 +2,9 @@ package ru.mikhalev.springprojects.LibraryJournal.service.functional.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import ru.mikhalev.springprojects.LibraryJournal.model.Book;
-import ru.mikhalev.springprojects.LibraryJournal.model.Person;
 import ru.mikhalev.springprojects.LibraryJournal.repository.BookRepository;
-import ru.mikhalev.springprojects.LibraryJournal.service.functional.api.BookService;
 
 import java.util.List;
 
@@ -15,15 +14,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class BookImpl implements BookService {
+public class BookService {
     private final BookRepository bookRepository;
 
-    @Override
     public void addBook(Book book) {
         bookRepository.save(book);
     }
 
-    @Override
     public void editBook(int id, Book updatedBook) {
         Book book = Book.getBookByOptional(bookRepository.findById(id));
         book.setTitle(updatedBook.getTitle());
@@ -32,18 +29,27 @@ public class BookImpl implements BookService {
         bookRepository.save(book);
     }
 
-    @Override
     public void deleteBook(int id) {
         bookRepository.deleteById(id);
     }
 
-    @Override
     public List<Book> showAllBooks() {
         return bookRepository.findAll();
     }
 
-    @Override
     public Book showOneBook(int id) {
         return bookRepository.getReferenceById(id);
+    }
+
+    public void editBookOwner(int id, @ModelAttribute Book updatedBook) {
+        Book book = Book.getBookByOptional(bookRepository.findById(id));
+        book.setPersonId(updatedBook.getPersonId());
+        bookRepository.save(book);
+    }
+
+    public void departureBook(int id) {
+        Book book = bookRepository.getReferenceById(id);
+        book.setPersonId(null);
+        bookRepository.save(book);
     }
 }

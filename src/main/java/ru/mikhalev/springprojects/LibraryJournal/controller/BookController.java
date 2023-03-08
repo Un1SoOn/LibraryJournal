@@ -1,13 +1,15 @@
 package ru.mikhalev.springprojects.LibraryJournal.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.mikhalev.springprojects.LibraryJournal.controller.api.BookApi;
 import ru.mikhalev.springprojects.LibraryJournal.model.Book;
-import ru.mikhalev.springprojects.LibraryJournal.model.Person;
-import ru.mikhalev.springprojects.LibraryJournal.service.functional.api.BookService;
+import ru.mikhalev.springprojects.LibraryJournal.service.functional.impl.BookService;
+import ru.mikhalev.springprojects.LibraryJournal.service.functional.impl.PersonService;
 
 /**
  * @author Ivan Mikhalev
@@ -18,6 +20,7 @@ import ru.mikhalev.springprojects.LibraryJournal.service.functional.api.BookServ
 @RequiredArgsConstructor
 public class BookController implements BookApi {
     private final BookService bookService;
+    private final PersonService personService;
 
     @Override
     @GetMapping()
@@ -36,6 +39,13 @@ public class BookController implements BookApi {
     @Override
     public String showBook(int id, Model model) {
         model.addAttribute("book", bookService.showOneBook(id));
+        model.addAttribute("people", personService.showAllPersons());
+        model.addAttribute("personId", bookService.showOneBook(id).getPersonId());
+        Integer personId = bookService.showOneBook(id).getPersonId();
+
+        if(personId != null)
+            model.addAttribute("person", personService.showOnePerson(personId));
+
         return "books/showBookPage";
     }
 
@@ -48,9 +58,24 @@ public class BookController implements BookApi {
 
     @Override
     @PostMapping("/{id}/edit")
-    public String editBook(@PathVariable int id, Book updatedBook) {
+    public String editBook(@PathVariable int id, @Valid Book updatedBook, BindingResult bindingResult) {
+        if(bindingResult.hasErrors())
+            return "books/editBookPage";
         bookService.editBook(id, updatedBook);
         return "redirect:/books";
+    }
+
+    @Override
+    @PostMapping("/{id}/appoint")
+    public String editBookOwner(@PathVariable int id, Book updatedBook) {
+        bookService.editBookOwner(id, updatedBook);
+        return "redirect:/books/{id}";
+    }
+
+    @Override
+    public String departureBook(@PathVariable int id) {
+        bookService.departureBook(id);
+        return "redirect:/books/{id}";
     }
 
     @Override
@@ -62,7 +87,11 @@ public class BookController implements BookApi {
 
     @Override
     @PostMapping("/new")
-    public String newBook(@ModelAttribute("book") Book book) {
+    public String newBook(@ModelAttribute("book") @Valid Book book, BindingResult bindingResult) {
+        if(bindingResult.hasErrors())
+            return "books/newBookPage";
+
+        book.setPersonId(null);
         bookService.addBook(book);
         return "redirect:/books";
     }
